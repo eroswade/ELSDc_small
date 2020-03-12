@@ -16,11 +16,11 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-  rectangle.h - This file belongs to ELSDc project (Ellipse and Line Segment 
-                Detector with continuous validation).
-              - It defines data structures to handle a connected region that 
-                can be approximated by a rectangle, and prototypes for functions 
-                that handle rectangles (e.g. computing rectangle's parameters).
+  rectangle.h - This file belongs to ELSDc project (Ellipse and Line Segment
+				Detector with continuous validation).
+			  - It defines data structures to handle a connected region that
+				can be approximated by a rectangle, and prototypes for functions
+				that handle rectangles (e.g. computing rectangle's parameters).
 
 ------------------------------------------------------------------------------*/
 
@@ -30,20 +30,20 @@
 /*----------------------------------------------------------------------------*/
 /** Rectangle structure. A rectangle is actually a line segment with width.
  */
-typedef struct 
+typedef struct
 {
-  double x1, y1, x2, y2;  /* first and second point of the line segment */
-  double len;             /* length of the rectangle                    */
-  double width;           /* rectangle width                            */
-  double wmin, wmax;      /* width towards interior and exterior        */
-  double cx, cy;          /* center of the rectangle                    */
-  double theta;           /* angle between rectangle orientation and Ox */
-  double dx, dy;          /* components of the line segment angle       */
-  double prec;            /* tolerance angle                            */
+	double x1, y1, x2, y2;  /* first and second point of the line segment */
+	double len;             /* length of the rectangle                    */
+	double width;           /* rectangle width                            */
+	double wmin, wmax;      /* width towards interior and exterior        */
+	double cx, cy;          /* center of the rectangle                    */
+	double theta;           /* angle between rectangle orientation and Ox */
+	double dx, dy;          /* components of the line segment angle       */
+	double prec;            /* tolerance angle                            */
 } Rectangle;
 
-void copy_rect( Rectangle *in, Rectangle *out );
-void write_rectangle( FILE *f, Rectangle *r );
+void copy_rect(Rectangle *in, Rectangle *out);
+void write_rectangle(FILE *f, Rectangle *r);
 
 #endif
 

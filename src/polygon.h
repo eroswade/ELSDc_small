@@ -15,11 +15,11 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-  polygon.h - This file belongs to ELSDc project (Ellipse and Line Segment 
-              Detector with continuous validation).
-            - It defines data structures to handle a connected region that 
-              can be approximated by a polygon, and prototypes for functions 
-              that handle polygons.
+  polygon.h - This file belongs to ELSDc project (Ellipse and Line Segment
+			  Detector with continuous validation).
+			- It defines data structures to handle a connected region that
+			  can be approximated by a polygon, and prototypes for functions
+			  that handle polygons.
 
 ------------------------------------------------------------------------------*/
 
@@ -33,32 +33,32 @@
 /*----------------------------------------------------------------------------*/
 /** Convex polygon = set of (not necessarily meaningful) rectangles.
  */
-typedef struct 
+typedef struct
 {
-  int dim_max;            /* number of maximum allocated number of segments  */
-  int dim;                /* number of segments in the polygon               */
-  double wmin;            /* dmin is the minimum of all the rectangles' dmin */
-  double wmax;            /* dmax is the maximum of all the rectangles' dmax */
-  Rectangle* rectlist;    /* list of rectangles composing the polygon        */
+	int dim_max;            /* number of maximum allocated number of segments  */
+	int dim;                /* number of segments in the polygon               */
+	double wmin;            /* dmin is the minimum of all the rectangles' dmin */
+	double wmax;            /* dmax is the maximum of all the rectangles' dmax */
+	Rectangle* rectlist;    /* list of rectangles composing the polygon        */
 } PolyRect;
 
 PolyRect* new_polyrect(void);
-void clear_polyrect( PolyRect *poly );
-void add_rect_to_polyrect( PolyRect *poly, Rectangle *r );
-void write_polyrect( FILE *f, PolyRect *poly );
+void clear_polyrect(PolyRect *poly);
+void add_rect_to_polyrect(PolyRect *poly, Rectangle *r);
+void write_polyrect(FILE *f, PolyRect *poly);
 /* double smooth_score( PolyRect *poly, int *idx, int order, int dim ); */
 
 
 /*----------------------------------------------------------------------------*/
 /** Polygon defined through consecutive ends of its segments.
  */
-typedef struct 
+typedef struct
 {
-  int dim;                /* number of segment endpoints in the polygon; it is 
-                             twice the number of line segments of the polygon */
-  PointD *pts;            /* endpoints of the segments in the polygon         */
+	int dim;                /* number of segment endpoints in the polygon; it is
+							   twice the number of line segments of the polygon */
+	PointD *pts;            /* endpoints of the segments in the polygon         */
 } Polygon;
 
-void polyrect2polygon( PolyRect *poly, Polygon *p );
+void polyrect2polygon(PolyRect *poly, Polygon *p);
 
 #endif

@@ -15,10 +15,10 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-  misc.h - This file belongs to ELSDc project (Ellipse and Line Segment 
-           Detector with continuous validation).
-         - It defines constants, data types, prototypes for misc functions 
-           needed in different parts of the project. 
+  misc.h - This file belongs to ELSDc project (Ellipse and Line Segment
+		   Detector with continuous validation).
+		 - It defines constants, data types, prototypes for misc functions
+		   needed in different parts of the project.
 
 ------------------------------------------------------------------------------*/
 
@@ -61,38 +61,38 @@
 #define min(A, B) (((A)<(B))?(A):(B))
 
 
-/*----------------------------------------------------------------------------*/
-/** Integer cartesian coordinates of a point.
- */
-typedef struct 
+ /*----------------------------------------------------------------------------*/
+ /** Integer cartesian coordinates of a point.
+  */
+typedef struct
 {
-  int x, y;
+	int x, y;
 } Point;
 
 /*----------------------------------------------------------------------------*/
 /** Double cartesian coordinates of a point.
  */
-typedef struct 
+typedef struct
 {
-  double x, y;
+	double x, y;
 } PointD;
 
 
 /* various function prototypes */
-void error( char *msg );
-int double_equal( double a, double b);
-int sign( double val );
-double dist( double x1, double y1, double x2, double y2 );
-double angle_diff( double a, double b );
-double angle_diff_signed( double a, double b );
-void swap_int( int *a, int *b );
-void swap_double( double *a, double *b );
-void swap_ptr_pts( Point **a, Point **b );
-double min_array( double *v, int sz );
-double min_array_pos( double *v, int sz, int *pos );
-double max_array_pos( double *a, int sz, int *poz );
-int in_interval( double x, double a, double b );
-int is_aligned( double a, double theta, double prec );
-double norm_angle_diff( double a, double b );
+void error(char *msg);
+int double_equal(double a, double b);
+int sign(double val);
+double dist(double x1, double y1, double x2, double y2);
+double angle_diff(double a, double b);
+double angle_diff_signed(double a, double b);
+void swap_int(int *a, int *b);
+void swap_double(double *a, double *b);
+void swap_ptr_pts(Point **a, Point **b);
+double min_array(double *v, int sz);
+double min_array_pos(double *v, int sz, int *pos);
+double max_array_pos(double *a, int sz, int *poz);
+int in_interval(double x, double a, double b);
+int is_aligned(double a, double theta, double prec);
+double norm_angle_diff(double a, double b);
 
 #endif

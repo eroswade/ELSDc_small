@@ -15,11 +15,11 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-  svg.h - This file belongs to ELSDc project (Ellipse and Line Segment 
-          Detector with continuous validation).
-        - It defines function prototypes to handle (initialize, close) an 
-          SVG file, and to write geometric shapes (lines, circles, ellipses, 
-          and arcs) in it.         
+  svg.h - This file belongs to ELSDc project (Ellipse and Line Segment
+		  Detector with continuous validation).
+		- It defines function prototypes to handle (initialize, close) an
+		  SVG file, and to write geometric shapes (lines, circles, ellipses,
+		  and arcs) in it.
 
 ------------------------------------------------------------------------------*/
 
@@ -30,11 +30,11 @@
 #include "polygon.h"
 #include "ring.h"
 
-FILE *init_svg( char *filename, unsigned int xsize, unsigned int ysize );
-void fclose_svg( FILE *fsvg );
-void write_svg_poly( FILE *fsvg, Polygon *poly );
-void write_svg_circ_arc( FILE *fsvg, Ring *cring );
-void write_svg_ell_arc( FILE *fsvg, Ring *ering );
+FILE *init_svg(char *filename, unsigned int xsize, unsigned int ysize);
+void fclose_svg(FILE *fsvg);
+void write_svg_poly(FILE *fsvg, Polygon *poly);
+void write_svg_circ_arc(FILE *fsvg, Ring *cring);
+void write_svg_ell_arc(FILE *fsvg, Ring *ering);
 
 #endif
 

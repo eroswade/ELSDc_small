@@ -16,10 +16,10 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-  iterator.h - This file belongs to ELSDc project (Ellipse and Line Segment 
-               Detector with continuous validation).
-             - It defines a data structure to scan points in a rectangular area,
-               and prototypes for functions to use it. 
+  iterator.h - This file belongs to ELSDc project (Ellipse and Line Segment
+			   Detector with continuous validation).
+			 - It defines a data structure to scan points in a rectangular area,
+			   and prototypes for functions to use it.
 
 ------------------------------------------------------------------------------*/
 
@@ -30,17 +30,17 @@
 /*----------------------------------------------------------------------------*/
 /** Rectangle iterator structure: useful to scan the pixels inside a rectangle.
  */
-typedef struct 
+typedef struct
 {
-  double vx[4];
-  double vy[4];
-  double ys, ye;
-  int    x, y;
+	double vx[4];
+	double vy[4];
+	double ys, ye;
+	int    x, y;
 } RectIter;
 
-void free_RectIter( RectIter *iter );
-int end_RectIter( RectIter *i );
-void inc_RectIter( RectIter *i );
-RectIter *ini_RectIter( Rectangle *r );
+void free_RectIter(RectIter *iter);
+int end_RectIter(RectIter *i);
+void inc_RectIter(RectIter *i);
+RectIter *ini_RectIter(Rectangle *r);
 
 #endif

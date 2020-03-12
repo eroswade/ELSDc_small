@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------------------
 
   Copyright (c) 2012-2014 viorica patraucean (vpatrauc@gmail.com)
-  
+
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as
   published by the Free Software Foundation, either version 3 of the
@@ -16,9 +16,9 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
-  ellipse_fit.h - This file belongs to ELSDc project (Ellipse and Line Segment 
-                  Detector with continuous validation)
-                - It contains 
+  ellipse_fit.h - This file belongs to ELSDc project (Ellipse and Line Segment
+				  Detector with continuous validation)
+				- It contains
 
 ------------------------------------------------------------------------------*/
 
@@ -29,8 +29,8 @@
 #include "image.h"
 
 
-void conic_fit( PImageDouble gradx, PImageDouble grady, Point *reg, 
-                int reg_size, double **buff, int *size_buff_max, 
-                double *cparam, double *eparam );
+void conic_fit(PImageDouble gradx, PImageDouble grady, Point *reg,
+	int reg_size, double **buff, int *size_buff_max,
+	double *cparam, double *eparam);
 
 #endif

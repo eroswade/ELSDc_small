@@ -1,8 +1,8 @@
 /*------------------------------------------------------------------------------
 
-  Copyright (c) 2007-2011 rafael grompone von gioi (grompone@gmail.com) 
+  Copyright (c) 2007-2011 rafael grompone von gioi (grompone@gmail.com)
   Copyright (c) 2012-2014 viorica patraucean (vpatrauc@gmail.com)
-  
+
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as
   published by the Free Software Foundation, either version 3 of the
@@ -16,10 +16,10 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-  gauss.h - This file belongs to ELSDc project (Ellipse and Line Segment 
-            Detector with continuous validation).
-          - It defines data structure for Gaussian filter and function 
-            prototype for applying it. 
+  gauss.h - This file belongs to ELSDc project (Ellipse and Line Segment
+			Detector with continuous validation).
+		  - It defines data structure for Gaussian filter and function
+			prototype for applying it.
 
 ------------------------------------------------------------------------------*/
 
@@ -29,18 +29,18 @@
 
 
 /*----------------------------------------------------------------------------*/
-/** Structure for defining the parameters of a Gaussian filter: dimension, mean, 
-    standard deviation, and actual values.
- */ 
+/** Structure for defining the parameters of a Gaussian filter: dimension, mean,
+	standard deviation, and actual values.
+ */
 typedef struct GaussFilter
 {
-  int dim;
-  double sigma;
-  double mean;
-  double *values;
+	int dim;
+	double sigma;
+	double mean;
+	double *values;
 } *PGaussFilter; /* pointer to Gauss filter structure */
 
-PImageDouble gaussian_sampler( PImageDouble in, double scale, 
-                               double sigma_scale );
+PImageDouble gaussian_sampler(PImageDouble in, double scale,
+	double sigma_scale);
 
 #endif
