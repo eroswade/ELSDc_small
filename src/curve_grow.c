@@ -668,6 +668,13 @@ static void subcurve(PImageDouble angles, PImageDouble gradmag, PImageInt used,
 /*----------------------------------------------------------------------------*/
 /** Compute a polygonal approximation of a relatively smooth and convex curve,
 	scanning in both directions starting from an initial rectangle.
+	gradmag 梯度图
+	angles 角度图
+	used 使用标识
+	reg Regiongrow  reg_size size
+	density_th?
+	prec?
+
  */
 int curve_grow(PImageDouble gradmag, PImageDouble angles,
 	PImageInt used, Point *reg, int *reg_size,
@@ -697,7 +704,7 @@ int curve_grow(PImageDouble gradmag, PImageDouble angles,
 	start = 0;
 	idx_buff = *reg_size;
 	label_start = (*label);
-	/* Perform initial region growing, to estimate first rectangle */
+	/* Perform initial region growing, to estimate first rectangle 找到第一个RECT*/
 	region_grow(angles, used, reg, start, idx_buff, reg_size, *label, label_start,
 		prec, &reg_angle);
 

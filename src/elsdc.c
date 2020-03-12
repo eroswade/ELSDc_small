@@ -901,14 +901,14 @@ void ELSDc(PImageDouble in, int *ell_count, Ring **ell_out, int **ell_labels,
 		+ LOG10_2;
 	min_size_seg = (int)((-logNT_seg - mlog10eps) / log10(p));
 
-	/* perform gaussian smoothing */
+	/*1. 计算高斯  perform gaussian smoothing */
 	imgauss = gaussian_sampler(in, 1.0, 0.6);
 
-	/* compute gradient magnitude and orientation  for the smooth image */
+	/*2. 计算高斯后的梯度和角度 compute gradient magnitude and orientation  for the smooth image */
 	img_gradient_sort(imgauss, rho, &list_p, &mem_p, n_bins, max_grad, &angles,
 		&gradmag, &gradx, &grady);
 
-	/* compute gradient orientation for the original image */
+	/*3. 计算原图的梯度角度图 compute gradient orientation for the original image */
 	angles0 = img_gradient_angle(in, rho);
 
 	/* input image not needed any more; free it */
@@ -948,13 +948,13 @@ void ELSDc(PImageDouble in, int *ell_count, Ring **ell_out, int **ell_labels,
 		reg[0].y = list_p->y;
 		reg_size = 1;
 
-		/* Gather points aligned along a convex polygon */
+		/*4. 凸包获取 Gather points aligned along a convex polygon */
 		if (!curve_grow(gradmag, angles, used, reg, &reg_size, density_th,
 			prec, poly, &label, pext2, pext1, &spir))
 			continue;
 
 
-		/* Validate polygon */
+		/* 确认凸包 Validate polygon */
 		/* Compute number of tests for polygon; it must be done for each
 		   polygon, as it depends on the number of segments in the
 		   polygon */
@@ -971,7 +971,7 @@ void ELSDc(PImageDouble in, int *ell_count, Ring **ell_out, int **ell_labels,
 			best_type = 'p';
 		}
 
-		/* Estimate a single segment on the entire set and validate;
+		/* 确定直线参数 并计算NFA Estimate a single segment on the entire set and validate;
 		   this prevents from considering very small regions at the ends
 		   of a large segment as new segments. */
 		get_seg(angles, gradmag, used, seg, reg, reg_size, prec);
@@ -988,13 +988,13 @@ void ELSDc(PImageDouble in, int *ell_count, Ring **ell_out, int **ell_labels,
 			size_best_buff = size_new_buff;
 		}
 
-		/* Estimate circle and ellipse parameters (centre, axes, orientation)
+		/* 获取圆和椭圆的参数 Estimate circle and ellipse parameters (centre, axes, orientation)
 		   on the gathered pixels */
 		if (reg_size > min_size_ell)
 			conic_fit(gradx, grady, reg, reg_size, &buff_fit, &size_buff_fit,
 				cparam, eparam);
 
-		/* Get parameters of the circle ring and compute validation score */
+		/* 计算最好的圆参数 主要是计算NFA Get parameters of the circle ring and compute validation score */
 		ang0 = angles->data[reg[0].y*angles->xsize + reg[0].x];
 		if (get_ring(reg, reg_size, ang0, cparam, pext1, pext2, CIRCLE,
 			spir, &cring, &grad_dirc, foci, msize))
@@ -1014,7 +1014,7 @@ void ELSDc(PImageDouble in, int *ell_count, Ring **ell_out, int **ell_labels,
 			}
 		} /* ! get cring */
 
-	  /* Get parameters of the ellipse ring and compute validation score */
+	  /* 计算最好的椭圆参数 主要是计算NFA Get parameters of the ellipse ring and compute validation score */
 		if (get_ring(reg, reg_size, ang0, eparam, pext1, pext2, ELLIPSE,
 			spir, &ering, &grad_dire, foci, msize))
 		{
@@ -1033,7 +1033,7 @@ void ELSDc(PImageDouble in, int *ell_count, Ring **ell_out, int **ell_labels,
 			}
 		}  /* ! get ering */
 
-	  /* At this point, we have the most meaninful feature at this iteration.
+	  /* 输出参数 At this point, we have the most meaninful feature at this iteration.
 		 If it is meaningful compared to eps, then store */
 		if (best_nfa <= mlog10eps) continue;
 		label_meaningful++;
@@ -1053,7 +1053,7 @@ void ELSDc(PImageDouble in, int *ell_count, Ring **ell_out, int **ell_labels,
 		}
 
 
-		/* Mark as USED the pixels of the best feature in 'used' */
+		/* 标志USED Mark as USED the pixels of the best feature in 'used' */
 		mark_img_pts(used, best_buff, 0, size_best_buff, USED);
 
 		/* Mark label of the best feature in output label image */

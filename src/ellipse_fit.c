@@ -386,6 +386,12 @@ static void fit_ellipse(double *buff, double *vgg, int reg_size,
 
 /*----------------------------------------------------------------------------*/
 /** Given a set of oriented pixels, fit an ellipse and a circle on it
+输入：
+以gradx grady --> 梯度
+reg reg_size --> regiongrow 结果
+输出：
+buff size_buff_max 为参数
+计算circle ellipse参数
  */
 void conic_fit(PImageDouble gradx, PImageDouble grady, Point *reg,
 	int reg_size, double **buff, int *size_buff_max,
