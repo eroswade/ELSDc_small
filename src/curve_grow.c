@@ -45,6 +45,8 @@
 	reg_index: 0.....start.....idx_buf (end)
 	(start...idx_buf) is the buffer zone (>=1) of the list; the orientations of
 	the pixels in this zone are used to initialize reg_angle.
+	这个算法和ELSD 以及 HQEllDetection是一样的. 只是它的连通用了label标记
+	而ELSD只用了USED/NOTUSED标记
  */
 static void region_grow(PImageDouble angles, PImageInt used, Point *reg,
 	int start, int idx_buff, int *end, int label,
@@ -65,7 +67,6 @@ static void region_grow(PImageDouble angles, PImageInt used, Point *reg,
 
 	/* Initialise *reg_angle with the value of the pixels
 	   orientations in the buffer part of reg. */
-
 	for (i = start; i < idx_buff; i++)
 	{
 		xx = reg[i].x; yy = reg[i].y;
@@ -120,6 +121,7 @@ static void region_grow(PImageDouble angles, PImageInt used, Point *reg,
 	coordinates of the point set. The modulus of the gradient magnitude
 	contained in 'gradmag' is used to weight pixels' contributions.
  */
+// 和ELSD相同， 但不同与HQEllDetection  ELSDc是限制在 (0,2*pi)   而HQEllDetection限制在(-pi,pi)
 static double get_theta(PImageDouble gradmag, Point *reg, int start, int end,
 	double cx, double cy, double reg_angle, double prec)
 {
@@ -225,7 +227,18 @@ void region2rect(PImageDouble gradmag, Point *reg, int start, int end,
 	if (start >= end) error("region2rect: invalid indexes.");
 	if (rec == NULL) error("region2rect: invalid 'rec'.");
 
-	/* Center */
+	/* Center 
+	of the region:
+
+	It is computed as the weighted sum of the coordinates
+	of all the pixels in the region. The norm of the gradient
+	is used as the weight of a pixel. The sum is as follows:
+	cx = \sum_i G(i).x_i
+	cy = \sum_i G(i).y_i
+	where G(i) is the norm of the gradient of pixel i
+	and x_i,y_i are its coordinates.
+	*/
+	//获得质心 x,y
 	cx = cy = sum = 0.0;
 	for (i = start; i < end; i++)
 	{
@@ -240,13 +253,25 @@ void region2rect(PImageDouble gradmag, Point *reg, int start, int end,
 	cy /= sum;
 
 	/* Orientation */
+	//运用惯性矩阵获得更为精确的角度估计
 	theta = get_theta(gradmag, reg, start, end, cx, cy, reg_angle, prec);
 
 	/* Length and width */
 	dx = cos(theta);
 	dy = sin(theta);
+	//因为区域的方向向量为 (dx,dy) 
+	/*
+		------------------->x
+		|\
+		| \
+		|  \(dx,dy)
+		|
+		\|/
+		y
+	因此顺时针旋转90°是 (-dy,dx)
+	*/
 	l_min = l_max = w_min = w_max = 0.0;
-	for (i = start; i < end; i++)
+	for (i = start; i < end; i++)//用向量内积求在线段方向和与线段方向垂直方向的投影求l,w
 	{
 		l = ((double)reg[i].x - cx) * dx + ((double)reg[i].y - cy) * dy;
 		w = -((double)reg[i].x - cx) * dy + ((double)reg[i].y - cy) * dx;
@@ -413,21 +438,21 @@ static int refine(PImageDouble gradmag, PImageDouble angles, PImageInt used,
 		{
 			angle = angles->data[reg[i].x + reg[i].y * angles->xsize];
 			ang_d = angle_diff_signed(angle, ang_c);
-			sum += ang_d;
-			s_sum += ang_d *ang_d;
+			sum += ang_d;//加上角度差
+			s_sum += ang_d *ang_d;//加上角度差的平方
 			++n;
 		}
 	}
 	mean_angle = sum / (double)n;
+	// 以2倍标准差作为新的角度容忍度，最开始为22.5°*pi / 180
 	/* tau = 2 * standard deviation */
-	tau = max(2.0 * sqrt((s_sum - 2.0 * mean_angle * sum) / (double)n
-		+ mean_angle * mean_angle), 0.2);
+	tau = max(2.0 * sqrt((s_sum - 2.0 * mean_angle * sum) / (double)n + mean_angle * mean_angle), 0.2);
 	tau = min(tau, prec);
 	/*tau = 2.0 * sqrt( (s_sum - 2.0 * mean_angle * sum) / (double) n
 						+ mean_angle*mean_angle );*/ /* 2 * standard deviation */
 
-
-						/* Find a new region from the same starting point and new angle tolerance */
+	//以新的角度容忍度重新进行区域生长
+	/* Find a new region from the same starting point and new angle tolerance */
 	*end = idx_buff;
 	(*label)++;
 	region_grow(angles, used, reg, start, idx_buff, end, *label, label_start,
@@ -590,6 +615,7 @@ static void subcurve(PImageDouble angles, PImageDouble gradmag, PImageInt used,
 			/* Estimate and refine rectangle */
 			region2rect(gradmag, reg, start, *end, reg_angle, &rec, prec);
 			(*label)++;
+			//提纯，通过重新生长区域来达到期望的密度阈值 
 			if (!refine(gradmag, angles, used, reg, start, idx_buff, end,
 				label, label_start, &rec, density_th, prec))
 			{
@@ -714,16 +740,18 @@ int curve_grow(PImageDouble gradmag, PImageDouble angles,
 	idx_buff = *reg_size;
 	label_start = (*label);
 	/* Perform initial region growing, to estimate first rectangle 找到第一次RECT 计算所有连通区*/
+	// 原始LSD只有8个参数 这里多了idx_buff  label  label_start
 	region_grow(angles, used, reg, start, idx_buff, reg_size, *label, label_start,
 		prec, &reg_angle);
 
 	if (*reg_size <= 2) return 0;
 
 	/* Estimate initial rectangle 计算连通区对应的直线, 并返回THETA角*/
+	// 这个函数一样
 	region2rect(gradmag, reg, start, *reg_size, reg_angle, &rec, prec);
 
 	/* Refine rectangle if density of aligned points is less than density
-	   threshold 如果区域过小, 重新找rect*/
+	   threshold 如果区域过小, 重新找rect  通过重新生长区域来达到期望的密度阈值 */
 	if (!refine(gradmag, angles, used, reg, start, idx_buff, reg_size, label,
 		label_start, &rec, density_th, prec))
 	{

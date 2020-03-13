@@ -974,6 +974,7 @@ void ELSDc(PImageDouble in, int *ell_count, Ring **ell_out, int **ell_labels,
 		/* 确定直线参数 并计算NFA Estimate a single segment on the entire set and validate;
 		   this prevents from considering very small regions at the ends
 		   of a large segment as new segments. */
+		// 构造凸包的线
 		get_seg(angles, gradmag, used, seg, reg, reg_size, prec);
 		log_nfa = poly_improve(angles0, used, seg, &new_buff,
 			&size_new_buff, &tmp_buff, logNT_seg);
