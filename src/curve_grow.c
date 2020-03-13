@@ -210,6 +210,7 @@ static double get_theta(PImageDouble gradmag, Point *reg, int start, int end,
 /** Compute a rectangle that covers a connected region of points. A rectangle is
 	defined by end points, center, orientation, width. Additional fields
 	(precision of approximation) are useful for validation.
+	计算连通rect空间 调用了gettheta. 计算theta角
  */
 void region2rect(PImageDouble gradmag, Point *reg, int start, int end,
 	double reg_angle, Rectangle *rec, double prec)
@@ -543,6 +544,7 @@ static void px_seed(PImageDouble angles, PImageInt used, Rectangle *rec,
 	polygonal approximation of a relatively smooth and convex curve.
 	A new rectangle is accepted if the angle difference is less than PI/2,
 	and the length ratio is less than 10. These are empirical values.
+	凸包计算 准备curve
  */
 static void subcurve(PImageDouble angles, PImageDouble gradmag, PImageInt used,
 	PolyRect *poly, Point *reg, int start, int idx_buff,
@@ -671,10 +673,17 @@ static void subcurve(PImageDouble angles, PImageDouble gradmag, PImageInt used,
 	gradmag 梯度图
 	angles 角度图
 	used 使用标识
-	reg Regiongrow  reg_size size
-	density_th?
-	prec?
+	reg 初始化的点 
+	reg_size Regiongrow 输出 找到的连通点个数
+	density_th 0.7 输入
+	prec 22.5度
 
+	输出: 
+	poly  输出连续的直线框 包含subcurve
+	label 输入输出  标志连通区
+	pext1
+	pext2
+	spir
  */
 int curve_grow(PImageDouble gradmag, PImageDouble angles,
 	PImageInt used, Point *reg, int *reg_size,
@@ -704,17 +713,17 @@ int curve_grow(PImageDouble gradmag, PImageDouble angles,
 	start = 0;
 	idx_buff = *reg_size;
 	label_start = (*label);
-	/* Perform initial region growing, to estimate first rectangle 找到第一个RECT*/
+	/* Perform initial region growing, to estimate first rectangle 找到第一次RECT 计算所有连通区*/
 	region_grow(angles, used, reg, start, idx_buff, reg_size, *label, label_start,
 		prec, &reg_angle);
 
 	if (*reg_size <= 2) return 0;
 
-	/* Estimate initial rectangle */
+	/* Estimate initial rectangle 计算连通区对应的直线, 并返回THETA角*/
 	region2rect(gradmag, reg, start, *reg_size, reg_angle, &rec, prec);
 
 	/* Refine rectangle if density of aligned points is less than density
-	   threshold */
+	   threshold 如果区域过小, 重新找rect*/
 	if (!refine(gradmag, angles, used, reg, start, idx_buff, reg_size, label,
 		label_start, &rec, density_th, prec))
 	{
@@ -731,7 +740,7 @@ int curve_grow(PImageDouble gradmag, PImageDouble angles,
 	poly->dim++;
 	add_rect_to_polyrect(poly, &rec);
 
-	/* Compute first seed with the first end of the initial rectangle */
+	/* Compute first seed with the first end of the initial rectangle 从第一个直线框的最后一点开始找新的直线*/
 	pext1[0] = rec.x2;
 	pext1[1] = rec.y2;
 	(*label)++;
@@ -739,12 +748,12 @@ int curve_grow(PImageDouble gradmag, PImageDouble angles,
 	px_seed(angles, used, &rec, reg, start, &idx_buff, *reg_size, pext1, prec,
 		*label, label_start);
 
-	/* Lauch scan in first direction */
+	/* Lauch scan in first direction 扫第一个方向, 以第一个直线框的最后一点*/
 	subcurve(angles, gradmag, used, poly, reg, start, idx_buff, reg_size,
 		pext1, spir, density_th, prec, &sgn, label, label_start, 1);
 
 	/* Scan the other direction only if a complete tour was not scanned; this
-	   condition is to avoid spiral curves */
+	   condition is to avoid spiral curves 扫另一个方向 以第一个直线框的第一个点 防止螺旋式曲线 只有spir小于2pi的时候才扫第二次 */
 	pext2[0] = rec.x1;
 	pext2[1] = rec.y1;
 	if (*spir < M_2__PI)

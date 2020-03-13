@@ -335,7 +335,7 @@ double ellipse_normal_angle(double x, double y, double *foci)
 
 /*----------------------------------------------------------------------------*/
 /** Determine if the gradient converges or diverges to/from the centre.
-	Return 1 if gradient diverges, 0 if it converges.
+	Return 1 if gradient diverges 分叉, 0 if it converges汇合 .
 	Circle case.
  */
 static int dir_gradient_circ(int px, int py, double ang, double *param)
@@ -423,6 +423,7 @@ static void ell_ring_width(Point *reg, int reg_size, Ring *ering)
 /*----------------------------------------------------------------------------*/
 /** Given conic parameters and extreme points, fill in all the ring parameters.
 	If conic is 1, get circle ring, if 0 get ellipse ring.
+	获取参数
  */
 int get_ring(Point *reg, int reg_size, double ang, double *param,
 	double *pext1, double *pext2, int conic, double spir, Ring *r,
@@ -449,8 +450,8 @@ int get_ring(Point *reg, int reg_size, double ang, double *param,
 	else
 	{
 		if (!check_ell(param)) return FALSE;
-		ellipse_foci(param, foci);
-		*grad_dir = dir_gradient_ell(reg[0].x, reg[0].y, ang, foci);
+		ellipse_foci(param, foci);// 计算椭圆中点
+		*grad_dir = dir_gradient_ell(reg[0].x, reg[0].y, ang, foci);//计算椭圆上的梯度
 	}
 	/* fill in axes and orientation: this must be done after check, as for the
 	   ellipse the axes might have been swapped, and orientation normalized */
@@ -482,7 +483,7 @@ int get_ring(Point *reg, int reg_size, double ang, double *param,
 	if ((spir > M_PI) && (tang - r->ang_start < M_1_2_PI / 2.0))
 		swap_ring(r);
 
-	/* set ring widths */
+	/* set ring widths 分段长度 */
 	if (conic == CIRCLE)
 		circ_ring_width(reg, reg_size, r);
 	else

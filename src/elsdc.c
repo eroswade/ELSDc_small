@@ -988,7 +988,7 @@ void ELSDc(PImageDouble in, int *ell_count, Ring **ell_out, int **ell_labels,
 			size_best_buff = size_new_buff;
 		}
 
-		/* 获取圆和椭圆的参数 Estimate circle and ellipse parameters (centre, axes, orientation)
+		/* 获取圆和椭圆的参数 拟合 椭圆/圆 在ellipse_fit.c里 Estimate circle and ellipse parameters (centre, axes, orientation)
 		   on the gathered pixels */
 		if (reg_size > min_size_ell)
 			conic_fit(gradx, grady, reg, reg_size, &buff_fit, &size_buff_fit,
@@ -996,7 +996,7 @@ void ELSDc(PImageDouble in, int *ell_count, Ring **ell_out, int **ell_labels,
 
 		/* 计算最好的圆参数 主要是计算NFA Get parameters of the circle ring and compute validation score */
 		ang0 = angles->data[reg[0].y*angles->xsize + reg[0].x];
-		if (get_ring(reg, reg_size, ang0, cparam, pext1, pext2, CIRCLE,
+		if (get_ring(reg, reg_size, ang0, cparam, pext1, pext2, CIRCLE,//计算分段, 中心点
 			spir, &cring, &grad_dirc, foci, msize))
 		{
 			log_nfa = circ_ring_improve(angles0, used, &cring, reg[0].x,
