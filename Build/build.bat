@@ -1,0 +1,2 @@
+set VCPKG_ROOT=F:/vcpkg
+E:\OwnWork\Leaf\ELSDc_small\Build>cmake ..\src -DCMAKE_TOOLCHAIN_FILE=%VCPKG_ROOT%\scripts\buildsystemsvcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-windows -G "Visual Studio 14 2015" -A x64 -T host=x64

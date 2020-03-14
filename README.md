@@ -1,3 +1,16 @@
+WINDOWS COMPILE
+=================================================
+- STEP ONE
+DOWNLOAD [VCPKG](https://github.com/microsoft/vcpkg)
+- STEP TWO 
+INSTALL CLAPACK IN VCPKG
+vcpkg install clapack --triplet "x64-windows"
+- STEP THREE
+change the loaction of your own **vckpg** path in file Build/build.bat
+and run it.
+- STEP Four
+using visual studio to build it
+
 ELSDc: Ellipse and Line Segment Detector, with Continuous validation
 ====================================================================
 
